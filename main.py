@@ -4,9 +4,10 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from sklearn.metrics import pairwise_distances_argmin_min
 import pandas as pd
-model = joblib.load(r'models\DBSCAN2.joblib')
-scaler = joblib.load(r'models\scaler2.joblib')
-df = pd.read_csv(r"data\final_dataset.csv")
+model = joblib.load(r'DBSCAN2.joblib')
+scaler = joblib.load(r'scaler2.joblib')
+df = pd.read_csv(r"final_dataset.csv")
+
 class InputFeatures(BaseModel):
     publication_date: int
     num_pages: int
