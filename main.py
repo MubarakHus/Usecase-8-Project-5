@@ -91,7 +91,7 @@ async def predict(input_features: InputFeatures):
         
         # Filter the DataFrame for the cluster and return 3 samples
         cluster_df = df[df['Cluster'] == cluster_label]
-        cols = df.iloc[:, 3:16].columns  # Select the relevant columns
+        cols = df.iloc[:, 3:17].columns  # Select the relevant columns
         if not cluster_df.empty:
             samples = cluster_df.sample(3)
             categories = [ ]
@@ -104,7 +104,6 @@ async def predict(input_features: InputFeatures):
             year = [sample["publication_date"] for sample in samples]
             author = [sample["author"] for sample in samples]
             
-            print("Im Here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             return {"pred": int(cluster_label), "titles": titles, "img_urls": img_urls, "year": year, "author": author, "category":categories}
         else:
             return {"pred": int(cluster_label), "message": "No samples available for this cluster"}

@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Set up the Streamlit app
-st.title("Players Clusters")
+st.title("Books Clusters")
    
 # User inputs
 publication_date = st.number_input("تاريخ النشر", min_value=1800, max_value=2024, value=2000)
@@ -21,7 +21,7 @@ selected_lang = st.radio(
 # Prediction button
 if st.button("Predict"):
     # API request URL
-    url = "http://127.0.0.1:8000/predict"
+    url = "https://jarir-books.onrender.com/predict"
 
         
     # Data for the POST request
@@ -120,7 +120,7 @@ if st.button("Predict"):
             st.image(imgs[i], use_column_width=True)
             st.write(f"سنة النشر: {prediction['year'][i]}")
             st.write(f"المؤلف: {prediction['author'][i]}")
-            st.write(f"التصنيف: {prediction['category'][i]}")
+            st.write(f"التصنيف: {prediction['category'][0]}")
 
     except requests.exceptions.RequestException as e:
         st.error(f"Error requesting prediction from API. Please try again.{e}")
