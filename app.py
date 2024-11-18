@@ -8,16 +8,20 @@ st.title("Players Clusters")
 publication_date = st.number_input("تاريخ النشر", min_value=1800, max_value=2024, value=2000)
 num_pages = st.number_input("عدد الصفحات", min_value=20, max_value=1400, value=100)
 price = st.number_input("السعر", min_value=2, max_value=550, value=50)  # Add other types as necessary
-IsNew = st.checkbox(label="كتاب جديد", value=False) 
+IsNew = st.checkbox(label=" وصل حديثا", value=False) 
 category = st.selectbox("التصنيف", ["الادارة والاعمال", "الادب والشعر", "التاريخ والجغرافيا", "التراجم والسير", "التقنية والكمبيوتر", "الخيال العلمي", "العلوم الاجتماعية والسياسية", "العلوم والرياضيات", "القانون", "القصة والرواية", "الكتب الطبية", "تطوير الذات", "دراسات اسلامية"])  # Add other makes as needed
 cover = st.selectbox("الغلاف", ["غلاف ورقي", "غلاف مقوى", "غلاف مقوى فني", "كتاب الكتروني"])  # Add other makes as needed
-Lang1 = st.checkbox(label="عربي", key="اللغة", value=True) 
-Lang2 = st.checkbox(label="انجليزي", key="اللغة", value=False) 
+selected_lang = st.radio(
+    "اختر اللغة:",
+    options=["عربي", "انجليزي"],
+    index=0,  # Default selection (0 = "عربي")
+    horizontal=True  # Displays options in a horizontal layout
+)
 
 # Prediction button
 if st.button("Predict"):
     # API request URL
-    url = "https://jarir-books.onrender.com"
+    url = "https://jarir-books.onrender.com/predict"
 
         
     # Data for the POST request
@@ -43,8 +47,8 @@ if st.button("Predict"):
         "art_cvr":0,
         "ppr_cvr":0,
         "e_cvr":0,
-        "ar":Lang1,
-        "e":Lang2
+        "ar":0,
+        "e":0
     }
     if category == "الادارة والاعمال":
         data["mng_cate"] = 1
@@ -95,19 +99,26 @@ if st.button("Predict"):
     elif cover == "كتاب الكتروني":
         data["e_cvr"] = 1
 
+    if selected_lang == "عربي":
+        data["ar"] = 1
+        
+    elif selected_lang == "انجليزي":
+        data["e"] = 1
+        
     try:
         response = requests.post(url, json=data)
         response.raise_for_status()  # Check for request errors
         prediction = response.json()  # Parse JSON response
+        print(prediction)
         # {'Cheap_Price': 0, 'Good_Price': 1, 'High_Price': 2} 
 
         st.header("Recommended Books")
-        
+        imgs= prediction["img_urls"]
         # Display all recommended books with their images
         for i in range(len(prediction["titles"])):
             st.subheader(f"Book {i+1}: {prediction['titles'][i]}")
-            st.image(prediction["img_urls"][i], caption=f"Book {i+1} Image", use_column_width=True)
+            st.image(imgs[i], caption=f"Book {i+1} Image", use_column_width=True)
 
     except requests.exceptions.RequestException as e:
-        st.error("Error requesting prediction from API. Please try again.")
+        st.error(f"Error requesting prediction from API. Please try again.{e}")
         st.write(e)
