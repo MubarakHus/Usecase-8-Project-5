@@ -21,7 +21,7 @@ selected_lang = st.radio(
 # Prediction button
 if st.button("Predict"):
     # API request URL
-    url = "https://jarir-books.onrender.com/predict"
+    url = "http://127.0.0.1:8000/predict"
 
         
     # Data for the POST request
