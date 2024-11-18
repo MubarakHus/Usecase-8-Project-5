@@ -116,8 +116,11 @@ if st.button("Predict"):
         imgs= prediction["img_urls"]
         # Display all recommended books with their images
         for i in range(len(prediction["titles"])):
-            st.subheader(f"Book {i+1}: {prediction['titles'][i]}")
-            st.image(imgs[i], caption=f"Book {i+1} Image", use_column_width=True)
+            st.subheader(f"{prediction['titles'][i]}")
+            st.image(imgs[i], use_column_width=True)
+            st.write(f"سنة النشر: {prediction['year'][i]}")
+            st.write(f"المؤلف: {prediction['author'][i]}")
+            st.write(f"التصنيف: {prediction['category'][i]}")
 
     except requests.exceptions.RequestException as e:
         st.error(f"Error requesting prediction from API. Please try again.{e}")

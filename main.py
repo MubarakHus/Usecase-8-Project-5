@@ -88,13 +88,21 @@ async def predict(input_features: InputFeatures):
         cluster_labels, _ = pairwise_distances_argmin_min(data, core_samples)
         cluster_label = model.labels_[model.core_sample_indices_[cluster_labels[0]]]
         
+        
         # Filter the DataFrame for the cluster and return 3 samples
         cluster_df = df[df['Cluster'] == cluster_label]
         if not cluster_df.empty:
             samples = cluster_df.sample(3).to_dict(orient="records")
             titles = [sample["title"] for sample in samples]
             img_urls = [sample["image_urls"] for sample in samples]
-            return {"pred": int(cluster_label), "titles": titles, "img_urls": img_urls}
+            year = [sample["publication_date"] for sample in samples]
+            author = [sample["author"] for sample in samples]
+            cols = samples.iloc[:, 3:16].columns
+            categories = []
+            for col in cols:
+                if samples[col] == 1:
+                    categories.append(col)
+            return {"pred": int(cluster_label), "titles": titles, "img_urls": img_urls, "year": year, "author": author, "category":categories}
         else:
             return {"pred": int(cluster_label), "message": "No samples available for this cluster"}
     except Exception as e:
