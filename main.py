@@ -91,13 +91,16 @@ async def predict(input_features: InputFeatures):
         
         # Filter the DataFrame for the cluster and return 3 samples
         cluster_df = df[df['Cluster'] == cluster_label]
+        cols = cluster_df.iloc[:, 3:16].columns
+
         if not cluster_df.empty:
-            samples = cluster_df.sample(3).to_dict(orient="records")
+            samples = cluster_df.sample(3)
+            cols = samples.iloc[:, 3:16].columns
+            samples = samples.to_dict(orient="records")
             titles = [sample["title"] for sample in samples]
             img_urls = [sample["image_urls"] for sample in samples]
             year = [sample["publication_date"] for sample in samples]
             author = [sample["author"] for sample in samples]
-            cols = samples.iloc[:, 3:16].columns
             categories = []
             for col in cols:
                 if samples[col] == 1:
